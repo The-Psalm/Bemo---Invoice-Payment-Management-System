@@ -1,51 +1,162 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 @import "tailwindcss";
 
-
 :root {
-  --bg-primary: #0c0f1a;
-  --bg-secondary: #111827;
-  --bg-card: #151d2e;
-  --bg-card-hover: #1a2236;
-  --border: #1f2d45;
-  --border-light: #243352;
-  --text-primary: #f0f4ff;
-  --text-secondary: #8b9dc3;
-  --text-muted: #4a5b7a;
-  --accent: #f59e0b;
-  --accent-light: #fbbf24;
-  --accent-dim: rgba(245, 158, 11, 0.12);
-  --green: #10b981;
-  --green-dim: rgba(16, 185, 129, 0.12);
-  --red: #ef4444;
-  --red-dim: rgba(239, 68, 68, 0.12);
-  --blue: #3b82f6;
-  --blue-dim: rgba(59, 130, 246, 0.12);
+  /* Backgrounds */
+  --bg-app: #FFF8EC;
+  --bg-surface: #FFFFFF;
+  --bg-raised: #FFFAF0;
+  --bg-subtle: #F3E4C1;
+  --bg-hover: #EADCB8;
+  --bg-active: #DFD1AF;
+
+  /* Borders */
+  --border-subtle: #F3E4C1;
+  --border-base: #E3D4B3;
+  --border-strong: #D1C2A1;
+
+  /* Text */
+  --text-primary: #2A2723;
+  --text-secondary: #575249;
+  --text-tertiary: #8A8477;
+  --text-disabled: #BDB6A8;
+  --text-muted: #8A8477;
+  
+  /* Aliases */
+  --bg-card: var(--bg-surface);
+  --bg-card-hover: var(--bg-raised);
+  --border: var(--border-base);
+
+  /* Accent — Forest Green */
+  --accent: #164E2E;
+  --accent-hover: #103F23;
+  --accent-subtle: #E8F3ED;
+  --accent-border: #BCE2CD;
+  --accent-text: #114226;
+
+  /* Semantic */
+  --green: #164E2E;
+  --green-subtle: #E8F3ED;
+  --green-border: #BCE2CD;
+  --amber: #B47109;
+  --amber-subtle: #FFF9EB;
+  --amber-border: #FDE68A;
+  --red: #9C2B14;
+  --red-subtle: #FBEBE8;
+  --red-border: #F1C3BA;
+  --blue: #2B4257;
+  --blue-subtle: #ECF1F6;
+  --blue-border: #C8D8E6;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(42, 39, 35, 0.04);
+  --shadow-sm: 0 1px 3px rgba(42, 39, 35, 0.05), 0 1px 2px rgba(42, 39, 35, 0.03);
+  --shadow-md: 0 4px 6px rgba(42, 39, 35, 0.04), 0 2px 4px rgba(42, 39, 35, 0.03);
+  --shadow-lg: 0 10px 25px rgba(42, 39, 35, 0.06), 0 4px 10px rgba(42, 39, 35, 0.03);
+  --shadow-xl: 0 20px 40px rgba(42, 39, 35, 0.08), 0 8px 16px rgba(42, 39, 35, 0.04);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+}
+
+html {
+  font-size: 15px;
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-app);
   color: var(--text-primary);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  font-weight: 400;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3 {
-  font-family: 'DM Serif Display', serif;
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Lora', Georgia, serif;
+  font-weight: 400;
   line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
 
-::selection { background: var(--accent-dim); color: var(--accent-light); }
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-base);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* Selection */
+::selection {
+  background: #E8F3ED;
+  color: var(--accent);
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Shimmer keyframe for skeletons */
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg,
+      var(--bg-subtle) 25%,
+      var(--bg-hover) 50%,
+      var(--bg-subtle) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* Fade-up utility */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.3s ease forwards;
+}

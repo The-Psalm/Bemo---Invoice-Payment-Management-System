@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Download, Zap } from 'lucide-react'
 import { useRef } from 'react'
+import { motion } from 'framer-motion'
 import { getPublicInvoice, initializePayment } from '../../api/invoices'
 import { formatCurrency } from '../../utils/currency'
 import { formatDate } from '../../utils/dates'
@@ -52,21 +53,21 @@ const handleDownload = () => {
 }
   if (isLoading)
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[var(--bg-app)] flex items-center justify-center p-4">
         <div className="w-full max-w-2xl space-y-4">
-          <Skeleton className="h-16 bg-slate-200" />
-          <Skeleton className="h-96 bg-slate-200" />
+          <Skeleton className="h-16" />
+          <Skeleton className="h-96" />
         </div>
       </div>
     )
 
   if (isError || !invoice)
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center text-center">
+      <div className="min-h-screen bg-[var(--bg-app)] flex items-center justify-center text-center">
         <div>
           <p className="text-6xl mb-4">🔍</p>
-          <h1 className="text-2xl font-bold text-slate-800 mb-2">Invoice not found</h1>
-          <p className="text-slate-500">This invoice may have been cancelled or the link is invalid.</p>
+          <h1 className="text-2xl font-medium text-[var(--text-primary)] font-['Lora'] mb-2">Invoice not found</h1>
+          <p className="text-[var(--text-secondary)]">This invoice may have been cancelled or the link is invalid.</p>
         </div>
       </div>
     )
@@ -78,14 +79,14 @@ const handleDownload = () => {
       {/* Load Paystack script */}
       <script src="https://js.paystack.co/v1/inline.js" async />
 
-      <div className="min-h-screen bg-slate-100 py-10 px-4">
+      <div className="min-h-screen bg-[var(--bg-app)] py-10 px-4">
         {/* Actions bar */}
-        <div className="max-w-2xl mx-auto mb-4 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-amber-500 rounded-lg flex items-center justify-center">
-              <Zap size={13} className="text-white" />
+            <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center shadow-sm">
+              <Zap size={14} className="text-white" />
             </div>
-            <span className="text-sm font-semibold text-slate-700">Bemo</span>
+            <span className="text-lg font-medium text-[var(--text-primary)] tracking-tight font-['Lora']">Bemo</span>
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" size="sm" icon={<Download size={13} />}
@@ -101,108 +102,128 @@ const handleDownload = () => {
         </div>
 
         {/* Invoice */}
-        <div
-          ref={printRef}
-          className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-10"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         >
-          <div className="flex justify-between items-start mb-10">
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">INVOICE</h1>
-              <p className="text-amber-600 font-semibold text-lg mt-1">
-                {invoice.invoice_number}
-              </p>
+          <div
+            ref={printRef}
+            className="max-w-3xl mx-auto bg-[#FFFFFF] text-[var(--text-primary)] rounded-none p-12 shadow-[var(--shadow-xl)] border border-[var(--border-subtle)]"
+          >
+            {/* Invoice top */}
+            <div className="flex justify-between items-start mb-12">
+              <div>
+                <h2 className="text-4xl font-medium text-[var(--text-primary)] mb-2 font-['Lora'] tracking-widest uppercase">
+                  Invoice
+                </h2>
+                <p className="text-[var(--text-secondary)] font-medium text-lg">
+                  {invoice.invoice_number}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-widest mb-1">Issued</p>
+                <p className="text-sm font-medium text-[var(--text-primary)] mb-4">
+                  {formatDate(invoice.issue_date)}
+                </p>
+                <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-widest mb-1">Due</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">
+                  {formatDate(invoice.due_date)}
+                </p>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-slate-400">Issued</p>
-              <p className="text-sm font-medium text-slate-700 mb-2">
-                {formatDate(invoice.issue_date)}
+
+            {/* Client */}
+            <div className="mb-10 p-5 border border-[var(--border-strong)] bg-transparent">
+              <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-widest mb-2">
+                Bill To
               </p>
-              <p className="text-xs text-slate-400">Due</p>
-              <p className="text-sm font-semibold text-slate-800">
-                {formatDate(invoice.due_date)}
+              <p className="font-medium text-[var(--text-primary)] text-lg font-['Lora'] mb-1">
+                {invoice.client.display_name}
               </p>
+              <p className="text-[var(--text-secondary)] text-sm">{invoice.client.email}</p>
+              {invoice.client.phone && (
+                <p className="text-[var(--text-secondary)] text-sm mt-0.5">{invoice.client.phone}</p>
+              )}
+              {invoice.client.address && (
+                <p className="text-[var(--text-secondary)] text-sm mt-0.5">{invoice.client.address}</p>
+              )}
             </div>
-          </div>
 
-          <div className="p-4 bg-slate-50 rounded-xl mb-8">
-            <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">
-              Bill To
-            </p>
-            <p className="font-bold text-slate-900 text-lg">
-              {invoice.client.display_name}
-            </p>
-            <p className="text-slate-500 text-sm">{invoice.client.email}</p>
-          </div>
-
-          <table className="w-full mb-8">
-            <thead>
-              <tr className="border-b-2 border-slate-200">
-                <th className="pb-2 text-left text-xs text-slate-400 uppercase tracking-wider">
-                  Description
-                </th>
-                <th className="pb-2 text-center text-xs text-slate-400 uppercase tracking-wider">
-                  Qty
-                </th>
-                <th className="pb-2 text-right text-xs text-slate-400 uppercase tracking-wider">
-                  Price
-                </th>
-                <th className="pb-2 text-right text-xs text-slate-400 uppercase tracking-wider">
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoice.items.map((item, i) => (
-                <tr key={i} className="border-b border-slate-100">
-                  <td className="py-3 text-sm text-slate-800">{item.description}</td>
-                  <td className="py-3 text-center text-sm text-slate-500">
-                    {item.quantity}
-                  </td>
-                  <td className="py-3 text-right text-sm text-slate-500">
-                    {formatCurrency(item.unit_price)}
-                  </td>
-                  <td className="py-3 text-right text-sm font-semibold text-slate-800">
-                    {formatCurrency(item.amount)}
-                  </td>
+            {/* Items */}
+            <table className="w-full mb-10">
+              <thead>
+                <tr className="border-y-2 border-[var(--text-primary)]">
+                  <th className="py-3 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-widest">
+                    Description
+                  </th>
+                  <th className="py-3 text-center text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-widest">
+                    Qty
+                  </th>
+                  <th className="py-3 text-right text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-widest">
+                    Unit Price
+                  </th>
+                  <th className="py-3 text-right text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-widest">
+                    Amount
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {invoice.items.map((item, i) => (
+                  <tr key={i} className="border-b border-[var(--border-base)]">
+                    <td className="py-4 text-sm text-[var(--text-primary)] font-medium">{item.description}</td>
+                    <td className="py-4 text-center text-sm text-[var(--text-secondary)]">
+                      {item.quantity}
+                    </td>
+                    <td className="py-4 text-right text-sm text-[var(--text-secondary)]">
+                      {formatCurrency(item.unit_price)}
+                    </td>
+                    <td className="py-4 text-right text-sm font-medium text-[var(--text-primary)]">
+                      {formatCurrency(item.amount)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-          <div className="flex justify-end mb-8">
-            <div className="w-56 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-500">Subtotal</span>
-                <span>{formatCurrency(invoice.subtotal)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Tax ({invoice.tax_rate}%)</span>
-                <span>{formatCurrency(invoice.tax_amount)}</span>
-              </div>
-              <div className="border-t-2 border-slate-900 pt-2 flex justify-between font-bold text-lg">
-                <span>Total</span>
-                <span className="text-amber-600">{formatCurrency(invoice.total)}</span>
+            {/* Totals */}
+            <div className="flex justify-end">
+              <div className="w-72 space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-[var(--text-secondary)] uppercase tracking-wider text-xs">Subtotal</span>
+                  <span className="text-[var(--text-primary)] font-medium">{formatCurrency(invoice.subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-[var(--text-secondary)] uppercase tracking-wider text-xs">Tax ({invoice.tax_rate}%)</span>
+                  <span className="text-[var(--text-primary)] font-medium">{formatCurrency(invoice.tax_amount)}</span>
+                </div>
+                <div className="border-t-2 border-[var(--text-primary)] pt-3 mt-2 flex justify-between items-center">
+                  <span className="text-[var(--text-primary)] font-semibold uppercase tracking-widest text-sm">Total</span>
+                  <span className="text-2xl font-['Lora'] font-medium text-[var(--text-primary)]">{formatCurrency(invoice.total)}</span>
+                </div>
+                {invoice.status === 'paid' && invoice.paid_at && (
+                  <div className="mt-6 p-3 border-2 border-[var(--accent)] text-center transform -rotate-2 w-max ml-auto opacity-80">
+                    <p className="text-sm text-[var(--accent)] font-bold uppercase tracking-widest font-['Lora']">
+                      Paid In Full
+                    </p>
+                    <p className="text-[10px] text-[var(--accent)] mt-0.5">
+                      {formatDate(invoice.paid_at)}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
+
+            {invoice.notes && (
+              <div className="mt-12 pt-8 border-t border-[var(--border-base)]">
+                <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-widest mb-2">
+                  Notes
+                </p>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-2xl">{invoice.notes}</p>
+              </div>
+            )}
           </div>
-
-          {invoice.status === 'paid' && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center mb-6">
-              <p className="text-emerald-700 font-semibold text-sm">
-                ✓ This invoice has been paid — {formatDate(invoice.paid_at)}
-              </p>
-            </div>
-          )}
-
-          {invoice.notes && (
-            <div className="pt-6 border-t border-slate-100">
-              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">
-                Notes
-              </p>
-              <p className="text-sm text-slate-600">{invoice.notes}</p>
-            </div>
-          )}
-        </div>
+        </motion.div>
       </div>
     </>
   )

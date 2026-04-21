@@ -60,7 +60,7 @@ export default function Settings() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-3xl text-[var(--text-primary)] font-['DM_Serif_Display']">
+        <h1 className="text-3xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
           Settings
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
@@ -92,9 +92,9 @@ export default function Settings() {
       ].map((section) => (
         <div
           key={section.title}
-          className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6"
+          className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl p-6"
         >
-          <h2 className="text-sm font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-4">
+          <h2 className="text-lg font-medium text-[var(--text-primary)] mb-5 font-['Lora'] tracking-tight">
             {section.title}
           </h2>
           <div className="grid grid-cols-2 gap-4">

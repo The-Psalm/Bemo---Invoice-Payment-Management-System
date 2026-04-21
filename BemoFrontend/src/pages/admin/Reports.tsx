@@ -37,7 +37,7 @@ export default function Reports() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl text-[var(--text-primary)] font-['DM_Serif_Display']">
+          <h1 className="text-3xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
             Reports
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-1">
@@ -51,7 +51,7 @@ export default function Reports() {
       </div>
 
       {/* Date Range Filter */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 flex gap-4 items-end">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl p-4 flex gap-4 items-end">
         <Input
           label="From"
           type="date"
@@ -108,9 +108,9 @@ export default function Reports() {
 
       {/* Top Clients */}
       {report?.top_clients && report.top_clients.length > 0 && (
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-[var(--border)]">
-            <h2 className="text-base font-semibold text-[var(--text-primary)]">
+        <div className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-[var(--border-base)] bg-[var(--bg-raised)]">
+            <h2 className="text-lg font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
               Top Clients by Revenue
             </h2>
           </div>
@@ -128,7 +128,7 @@ export default function Reports() {
             <tbody className="divide-y divide-[var(--border)]">
               {report.top_clients.map((c, i) => (
                 <tr key={i}
-                  className="hover:bg-[var(--bg-card-hover)] transition-colors">
+                  className="hover:bg-[var(--bg-raised)] transition-colors">
                   <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
                     #{i + 1}
                   </td>
@@ -137,7 +137,7 @@ export default function Reports() {
                       {c.client__company || c.client__name}
                     </p>
                   </td>
-                  <td className="px-6 py-4 text-sm font-semibold text-amber-400">
+                  <td className="px-6 py-4 text-sm font-medium text-[var(--accent)]">
                     {formatCurrency(c.revenue)}
                   </td>
                 </tr>

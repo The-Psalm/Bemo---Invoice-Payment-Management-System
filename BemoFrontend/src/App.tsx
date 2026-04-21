@@ -62,20 +62,28 @@ export default function App() {
         </Routes>
       </BrowserRouter>
 
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: 'var(--bg-card)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border)',
-            fontFamily: 'DM Sans, sans-serif',
-            fontSize: '14px',
-          },
-          success: { iconTheme: { primary: '#10b981', secondary: '#0c0f1a' } },
-          error:   { iconTheme: { primary: '#ef4444', secondary: '#0c0f1a' } },
-        }}
-      />
+ <Toaster
+  position="bottom-right"
+  toastOptions={{
+    style: {
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      border: '1px solid var(--border-base)',
+      borderRadius: 'var(--radius-md)',
+      fontFamily: "'Geist', sans-serif",
+      fontSize: '13px',
+      boxShadow: 'var(--shadow-lg)',
+      padding: '10px 14px',
+    },
+    success: {
+      iconTheme: { primary: 'var(--green)', secondary: 'var(--green-subtle)' },
+    },
+    error: {
+      iconTheme: { primary: 'var(--red)', secondary: 'var(--red-subtle)' },
+    },
+    duration: 3000,
+  }}
+/>
     </QueryClientProvider>
   )
 }

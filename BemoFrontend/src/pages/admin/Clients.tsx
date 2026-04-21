@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Search, Pencil, Trash2 } from 'lucide-react'
+import { Plus, Pencil, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import {
   getClients, createClient, updateClient, deleteClient
@@ -97,7 +97,7 @@ export default function Clients() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl text-[var(--text-primary)] font-['DM_Serif_Display']">
+          <h1 className="text-3xl font-bold text-slate-900 font-['Outfit'] tracking-tight">
             Clients
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-1">
@@ -110,7 +110,7 @@ export default function Clients() {
         </Button>
       </div>
 
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
+      <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-4">
         <Input
           placeholder="Search clients..."
           value={search}
@@ -118,7 +118,7 @@ export default function Clients() {
         />
       </div>
 
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
+      <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
         {isLoading ? (
           <div className="p-6"><TableSkeleton rows={6} /></div>
         ) : clients?.length === 0 ? (
@@ -149,7 +149,7 @@ export default function Clients() {
             <tbody className="divide-y divide-[var(--border)]">
               {clients?.map((client) => (
                 <tr key={client.id}
-                  className="hover:bg-[var(--bg-card-hover)] transition-colors group">
+                  className="hover:bg-slate-50 transition-colors group">
                   <td className="px-6 py-4">
                     <p className="text-sm font-medium text-[var(--text-primary)]">
                       {client.name}

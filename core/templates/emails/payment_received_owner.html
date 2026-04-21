@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f8fafc;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 580px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      }
+      .header {
+        background: #0f172a;
+        padding: 24px 32px;
+      }
+      .header h1 {
+        color: #10b981;
+        margin: 0;
+        font-size: 20px;
+      }
+      .body {
+        padding: 32px;
+      }
+      .body p {
+        color: #475569;
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0 0 12px;
+      }
+      .amount-highlight {
+        font-size: 28px;
+        font-weight: bold;
+        color: #10b981;
+      }
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 14px;
+      }
+      .detail-row .label {
+        color: #94a3b8;
+      }
+      .detail-row .value {
+        color: #0f172a;
+        font-weight: 600;
+      }
+      .footer {
+        background: #f8fafc;
+        padding: 16px 32px;
+        border-top: 1px solid #e2e8f0;
+      }
+      .footer p {
+        color: #94a3b8;
+        font-size: 12px;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>💰 Payment Received</h1>
+      </div>
+      <div class="body">
+        <p>Good news — a payment has just been received.</p>
+        <p class="amount-highlight">₦{{ invoice.total }}</p>
+        <div class="detail-row">
+          <span class="label">Invoice</span>
+          <span class="value">{{ invoice.invoice_number }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Client</span>
+          <span class="value">{{ invoice.client.display_name }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Reference</span>
+          <span class="value">{{ invoice.payment_reference }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Paid At</span>
+          <span class="value">{{ invoice.paid_at }}</span>
+        </div>
+      </div>
+      <div class="footer">
+        <p>Bemo Invoice System</p>
+      </div>
+    </div>
+  </body>
+</html>

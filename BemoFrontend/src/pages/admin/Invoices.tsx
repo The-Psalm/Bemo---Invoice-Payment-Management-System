@@ -2,11 +2,10 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Plus, Search, Filter, Download, Send, Trash2, Eye } from 'lucide-react'
+import { Plus, Download, Send, Trash2, Eye } from 'lucide-react'
 import toast from 'react-hot-toast'
 import {
-  getInvoices, sendInvoice, deleteInvoice,
-  markPaid, sendReminder
+  getInvoices, sendInvoice, deleteInvoice
 } from '../../api/invoices'
 import { exportCSV } from '../../api/reports'
 import { Badge } from '../../components/ui/Badge'
@@ -85,7 +84,7 @@ export default function Invoices() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl text-[var(--text-primary)] font-['DM_Serif_Display']">
+          <h1 className="text-3xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
             Invoices
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-1">
@@ -134,11 +133,10 @@ export default function Invoices() {
             <button
               key={s.value}
               onClick={() => setStatus(s.value)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                status === s.value
-                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${status === s.value
+                  ? 'bg-[var(--accent-subtle)] text-[var(--accent-text)] border border-[var(--accent-border)] shadow-sm'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
+                }`}
             >
               {s.label}
             </button>
@@ -146,8 +144,7 @@ export default function Invoices() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl overflow-hidden">
         {isLoading ? (
           <div className="p-6">
             <TableSkeleton rows={8} />
@@ -187,7 +184,7 @@ export default function Invoices() {
                   className="hover:bg-[var(--bg-card-hover)] transition-colors group"
                 >
                   <td className="px-6 py-4">
-                    <span className="text-sm font-medium text-amber-400">
+                    <span className="text-sm font-medium text-[var(--accent)]">
                       {inv.invoice_number}
                     </span>
                   </td>
@@ -225,7 +222,7 @@ export default function Invoices() {
                       {['draft', 'sent'].includes(inv.status) && (
                         <button
                           onClick={() => sendMutation.mutate(inv.id)}
-                          className="p-1.5 rounded-lg hover:bg-blue-500/10 text-[var(--text-muted)] hover:text-blue-400 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-[var(--accent-subtle)] text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
                           title="Send"
                         >
                           <Send size={14} />
@@ -237,7 +234,7 @@ export default function Invoices() {
                             if (confirm('Delete this invoice?'))
                               deleteMutation.mutate(inv.id)
                           }}
-                          className="p-1.5 rounded-lg hover:bg-red-500/10 text-[var(--text-muted)] hover:text-red-400 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-[var(--red-subtle)] text-[var(--text-muted)] hover:text-[var(--red)] transition-colors"
                           title="Delete"
                         >
                           <Trash2 size={14} />

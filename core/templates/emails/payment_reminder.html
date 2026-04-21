@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f8fafc;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 580px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      }
+      .header {
+        background: #ef4444;
+        padding: 28px 32px;
+        text-align: center;
+      }
+      .header h1 {
+        color: #ffffff;
+        margin: 0;
+        font-size: 22px;
+      }
+      .header p {
+        color: rgba(255, 255, 255, 0.85);
+        margin: 6px 0 0;
+        font-size: 13px;
+      }
+      .body {
+        padding: 32px;
+      }
+      .body p {
+        color: #475569;
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0 0 16px;
+      }
+      .overdue-box {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 24px 0;
+        text-align: center;
+      }
+      .overdue-box .label {
+        font-size: 12px;
+        color: #ef4444;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .overdue-box .amount {
+        font-size: 32px;
+        font-weight: bold;
+        color: #ef4444;
+        margin: 4px 0;
+      }
+      .overdue-box .due {
+        font-size: 13px;
+        color: #64748b;
+      }
+      .btn {
+        display: block;
+        width: fit-content;
+        margin: 24px auto;
+        background: #ef4444;
+        color: #ffffff;
+        text-decoration: none;
+        padding: 14px 32px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 15px;
+      }
+      .footer {
+        background: #f8fafc;
+        padding: 20px 32px;
+        text-align: center;
+        border-top: 1px solid #e2e8f0;
+      }
+      .footer p {
+        color: #94a3b8;
+        font-size: 12px;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Payment Reminder</h1>
+        <p>Invoice {{ invoice.invoice_number }} is overdue</p>
+      </div>
+      <div class="body">
+        <p>Hi <strong>{{ invoice.client.display_name }}</strong>,</p>
+        <p>
+          This is a friendly reminder that the following invoice is still
+          outstanding and past its due date.
+        </p>
+
+        <div class="overdue-box">
+          <div class="label">Outstanding Amount</div>
+          <div class="amount">₦{{ invoice.total }}</div>
+          <div class="due">Was due on {{ invoice.due_date }}</div>
+        </div>
+
+        <p>
+          Please make payment at your earliest convenience to avoid any
+          disruption.
+        </p>
+        <a href="{{ public_url }}" class="btn">Pay Now</a>
+        <p style="font-size: 13px; color: #94a3b8">
+          Invoice link:
+          <a href="{{ public_url }}" style="color: #ef4444">{{ public_url }}</a>
+        </p>
+      </div>
+      <div class="footer">
+        <p>
+          Sent via Bemo. If you have already paid, please disregard this
+          message.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

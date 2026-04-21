@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f8fafc;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 580px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      }
+      .header {
+        background: #0f172a;
+        padding: 32px;
+        text-align: center;
+      }
+      .header h1 {
+        color: #ffffff;
+        margin: 0;
+        font-size: 24px;
+      }
+      .header span {
+        color: #f59e0b;
+        font-size: 14px;
+      }
+      .body {
+        padding: 32px;
+      }
+      .body p {
+        color: #475569;
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0 0 16px;
+      }
+      .body strong {
+        color: #0f172a;
+      }
+      .amount-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 24px 0;
+        text-align: center;
+      }
+      .amount-box .label {
+        font-size: 12px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .amount-box .amount {
+        font-size: 32px;
+        font-weight: bold;
+        color: #f59e0b;
+        margin: 4px 0;
+      }
+      .amount-box .due {
+        font-size: 13px;
+        color: #64748b;
+      }
+      .btn {
+        display: block;
+        width: fit-content;
+        margin: 24px auto;
+        background: #f59e0b;
+        color: #0f172a;
+        text-decoration: none;
+        padding: 14px 32px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 15px;
+      }
+      .footer {
+        background: #f8fafc;
+        padding: 20px 32px;
+        text-align: center;
+        border-top: 1px solid #e2e8f0;
+      }
+      .footer p {
+        color: #94a3b8;
+        font-size: 12px;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Invoice from Bemo</h1>
+        <span>{{ invoice.invoice_number }}</span>
+      </div>
+      <div class="body">
+        <p>Hi <strong>{{ invoice.client.display_name }}</strong>,</p>
+        <p>You have a new invoice waiting for your review and payment.</p>
+
+        <div class="amount-box">
+          <div class="label">Amount Due</div>
+          <div class="amount">₦{{ invoice.total }}</div>
+          <div class="due">Due by {{ invoice.due_date }}</div>
+        </div>
+
+        <p>
+          Click the button below to view your invoice and complete payment
+          securely.
+        </p>
+        <a href="{{ public_url }}" class="btn">View &amp; Pay Invoice</a>
+        <p style="font-size: 13px; color: #94a3b8">
+          Or copy this link:
+          <a href="{{ public_url }}" style="color: #f59e0b">{{ public_url }}</a>
+        </p>
+      </div>
+      <div class="footer">
+        <p>
+          This invoice was sent via Bemo. If you have questions, reply to this
+          email.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

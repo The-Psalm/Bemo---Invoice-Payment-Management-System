@@ -1,22 +1,20 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { clsx } from 'clsx'
 import {
-  LayoutDashboard,
-  FileText,
-  Users,
-  BarChart3,
-  Settings,
-  LogOut,
-  Zap,
+  LayoutDashboard, FileText, Users,
+  BarChart3, Settings, LogOut,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 
 const nav = [
-  { to: '/admin',          label: 'Dashboard', icon: LayoutDashboard, exact: true },
-  { to: '/admin/invoices', label: 'Invoices',  icon: FileText },
-  { to: '/admin/clients',  label: 'Clients',   icon: Users },
-  { to: '/admin/reports',  label: 'Reports',   icon: BarChart3 },
-  { to: '/admin/settings', label: 'Settings',  icon: Settings },
+  { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { to: '/admin/invoices', label: 'Invoices', icon: FileText },
+  { to: '/admin/clients', label: 'Clients', icon: Users },
+  { to: '/admin/reports', label: 'Reports', icon: BarChart3 },
+]
+
+const bottom = [
+  { to: '/admin/settings', label: 'Settings', icon: Settings },
 ]
 
 export const Sidebar = () => {
@@ -24,67 +22,76 @@ export const Sidebar = () => {
   const user = useAuthStore((s) => s.user)
   const navigate = useNavigate()
 
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
+  const handleLogout = () => { logout(); navigate('/login') }
+
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    clsx(
+      'flex items-center gap-3 px-3 h-9 rounded-[var(--radius-sm)]',
+      'text-sm transition-all duration-150 group',
+      isActive
+        ? 'bg-[var(--bg-active)] text-[var(--text-primary)] font-medium'
+        : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]'
+    )
 
   return (
-    <aside className="w-60 flex-shrink-0 bg-[var(--bg-secondary)] border-r border-[var(--border)] flex flex-col h-screen sticky top-0">
-      {/* Logo */}
-      <div className="p-6 border-b border-[var(--border)]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
-            <Zap size={16} className="text-slate-900" />
-          </div>
-          <span className="text-lg font-bold text-[var(--text-primary)] font-['DM_Serif_Display']">
-            Bemo
-          </span>
-        </div>
+    <aside className="w-56 flex-shrink-0 flex flex-col h-screen sticky top-0 bg-[var(--bg-raised)] border-r border-[var(--border-subtle)]">
+      {/* Wordmark */}
+      <div className="h-14 flex items-center px-5 border-b border-[var(--border-subtle)]">
+        <span className="font-['Instrument_Serif'] text-xl text-[var(--text-primary)] italic">
+          Bemo
+        </span>
+        <span className="ml-2 text-[10px] font-medium text-[var(--text-tertiary)] bg-[var(--bg-subtle)] border border-[var(--border-base)] px-1.5 py-0.5 rounded-full uppercase tracking-wide">
+          Beta
+        </span>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 p-4 space-y-1">
-        {nav.map(({ to, label, icon: Icon, exact }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={exact}
-            className={({ isActive }) =>
-              clsx(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
-                isActive
-                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)]'
-              )
-            }
-          >
-            <Icon size={16} />
-            {label}
-          </NavLink>
-        ))}
+      {/* Main nav */}
+      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+        <div className="mb-3">
+          <p className="px-3 mb-1.5 text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-widest">
+            Main
+          </p>
+          {nav.map(({ to, label, icon: Icon, end }) => (
+            <NavLink key={to} to={to} end={end} className={linkClass}>
+              <Icon size={15} className="flex-shrink-0" />
+              {label}
+            </NavLink>
+          ))}
+        </div>
+
+        <div>
+          <p className="px-3 mb-1.5 mt-4 text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-widest">
+            Account
+          </p>
+          {bottom.map(({ to, label, icon: Icon }) => (
+            <NavLink key={to} to={to} className={linkClass}>
+              <Icon size={15} className="flex-shrink-0" />
+              {label}
+            </NavLink>
+          ))}
+        </div>
       </nav>
 
-      {/* User */}
-      <div className="p-4 border-t border-[var(--border)]">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-sm font-semibold">
-            {user?.full_name?.[0] ?? 'U'}
+      {/* User footer */}
+      <div className="p-3 border-t border-[var(--border-subtle)]">
+        <div className="flex items-center gap-2.5 px-3 py-2 rounded-[var(--radius-sm)] mb-1">
+          <div className="w-6 h-6 rounded-full bg-[var(--accent-subtle)] border border-[var(--accent-border)] flex items-center justify-center text-[10px] font-semibold text-[var(--accent-text)] flex-shrink-0">
+            {user?.full_name?.[0]?.toUpperCase() ?? 'U'}
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-[var(--text-primary)] truncate">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium text-[var(--text-primary)] truncate leading-tight">
               {user?.full_name}
             </p>
-            <p className="text-xs text-[var(--text-muted)] truncate">
+            <p className="text-[10px] text-[var(--text-tertiary)] truncate leading-tight">
               {user?.email}
             </p>
           </div>
         </div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-red-400 transition-colors w-full px-3 py-2 rounded-lg hover:bg-red-500/5"
+          className="w-full flex items-center gap-3 px-3 h-8 rounded-[var(--radius-sm)] text-xs text-[var(--text-tertiary)] hover:text-[var(--red)] hover:bg-[var(--red-subtle)] transition-all"
         >
-          <LogOut size={14} />
+          <LogOut size={13} />
           Sign out
         </button>
       </div>

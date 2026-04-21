@@ -1,5 +1,4 @@
-import {type ReactNode } from 'react'
-import { FileX } from 'lucide-react'
+import { type ReactNode } from 'react'
 
 interface EmptyStateProps {
   title: string
@@ -8,20 +7,17 @@ interface EmptyStateProps {
   icon?: ReactNode
 }
 
-export const EmptyState = ({
-  title,
-  description,
-  action,
-  icon,
-}: EmptyStateProps) => (
-  <div className="flex flex-col items-center justify-center py-20 text-center">
-    <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] mb-4 text-[var(--text-muted)]">
-      {icon || <FileX size={28} />}
-    </div>
-    <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-1">
+export const EmptyState = ({ title, description, action, icon }: EmptyStateProps) => (
+  <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+    {icon && (
+      <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--bg-subtle)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-tertiary)] mb-4">
+        {icon}
+      </div>
+    )}
+    <h3 className="text-base font-['Instrument_Serif'] text-[var(--text-primary)] mb-1">
       {title}
     </h3>
-    <p className="text-sm text-[var(--text-muted)] max-w-sm mb-6">
+    <p className="text-sm text-[var(--text-tertiary)] max-w-xs leading-relaxed mb-6">
       {description}
     </p>
     {action}

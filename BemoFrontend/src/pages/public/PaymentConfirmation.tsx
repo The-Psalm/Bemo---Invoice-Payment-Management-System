@@ -13,7 +13,7 @@ export default function PaymentConfirmation() {
         <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle size={40} className="text-emerald-500" />
         </div>
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2 font-['Outfit'] tracking-tight">
           Payment Successful
         </h1>
         <p className="text-slate-500 mb-6">

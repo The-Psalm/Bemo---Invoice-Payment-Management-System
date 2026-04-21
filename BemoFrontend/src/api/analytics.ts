@@ -4,8 +4,8 @@ import type { AnalyticsOverview, RevenueChartData, StatusBreakdownData } from '.
 export const getOverview = () =>
   api.get<AnalyticsOverview>('/analytics/overview/')
 
-export const getRevenueChart = () =>
-  api.get<RevenueChartData[]>('/analytics/revenue-chart/')
+export const getRevenueChart = (period?: string) =>
+  api.get<RevenueChartData[]>('/analytics/revenue-chart/', { params: { period } })
 
 export const getStatusBreakdown = () =>
   api.get<StatusBreakdownData[]>('/analytics/status-breakdown/')

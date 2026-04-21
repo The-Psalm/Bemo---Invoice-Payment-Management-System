@@ -1,8 +1,9 @@
+import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import {
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -11,6 +12,7 @@ import {
   Pie,
   Cell,
   Legend,
+  CartesianGrid,
 } from 'recharts'
 import {
   TrendingUp,
@@ -29,7 +31,7 @@ import { formatCurrency } from '../../utils/currency'
 import { formatDate } from '../../utils/dates'
 import { useAuthStore } from '../../store/authStore'
 
-const PIE_COLORS = ['#64748b', '#3b82f6', '#10b981', '#ef4444', '#475569']
+const PIE_COLORS = ['#E3D4B3', '#164E2E', '#9C2B14', '#B47109', '#2B4257']
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -40,18 +42,42 @@ const fadeUp = {
   }),
 }
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-md)] rounded-lg p-3 min-w-[120px]">
+        <p className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">
+          {label}
+        </p>
+        <p className="text-xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight leading-none">
+          {formatCurrency(payload[0].value)}
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
 export default function Dashboard() {
   const user = useAuthStore((s) => s.user)
+  const [revenuePeriod, setRevenuePeriod] = useState('6M')
 
   const { data: overview, isLoading: overviewLoading } = useQuery({
     queryKey: ['analytics-overview'],
     queryFn: () => getOverview().then((r) => r.data),
   })
 
-  const { data: revenueChart, isLoading: chartLoading } = useQuery({
-    queryKey: ['revenue-chart'],
-    queryFn: () => getRevenueChart().then((r) => r.data),
+  const { data: revenueChartData, isLoading: chartLoading } = useQuery({
+    queryKey: ['revenue-chart', revenuePeriod],
+    queryFn: () => getRevenueChart(revenuePeriod).then((r) => r.data),
   })
+
+  const revenueChart = useMemo(() => {
+    if (!revenueChartData) return []
+    if (revenuePeriod === '6M') return revenueChartData.slice(-6)
+    if (revenuePeriod === '1Y') return revenueChartData.slice(-12)
+    return revenueChartData
+  }, [revenueChartData, revenuePeriod])
 
   const { data: statusBreakdown } = useQuery({
     queryKey: ['status-breakdown'],
@@ -61,7 +87,7 @@ export default function Dashboard() {
   const { data: recentInvoices, isLoading: invoicesLoading } = useQuery({
     queryKey: ['recent-invoices'],
     queryFn: () =>
-      getInvoices({ ordering: '-created_at' }).then((r) => r.data.slice(0, 6)),
+      getInvoices({}).then((r) => r.data.slice(0, 6)),
   })
 
   const stats = [
@@ -99,8 +125,8 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-3xl font-semibold text-[var(--text-primary)] font-['DM_Serif_Display']">
-          Good morning, {user?.full_name?.split(' ')[0]} 👋
+        <h1 className="text-3xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
+          Good morning, {user?.full_name?.split(' ')[0]}.
         </h1>
         <p className="text-[var(--text-muted)] text-sm mt-1">
           Here's what's happening with your business today.
@@ -134,47 +160,70 @@ export default function Dashboard() {
           variants={fadeUp}
           initial="hidden"
           animate="show"
-          className="xl:col-span-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6"
+          className="xl:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl p-6"
         >
-          <h2 className="text-base font-semibold text-[var(--text-primary)] mb-6">
-            Revenue — Last 6 Months
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
+              Revenue Overview
+            </h2>
+            <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-lg border border-[var(--border-subtle)]">
+              {['6M', '1Y', 'ALL'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setRevenuePeriod(tab)}
+                  className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                    revenuePeriod === tab 
+                      ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm' 
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
           {chartLoading ? (
             <Skeleton className="h-56 w-full" />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={revenueChart} barSize={28}>
+              <AreaChart data={revenueChart} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="var(--border-subtle)" />
                 <XAxis
                   dataKey="month"
-                  tick={{ fill: 'var(--text-muted)', fontSize: 12 }}
+                  tick={{ fill: 'var(--text-tertiary)', fontSize: 11, fontFamily: 'DM Sans', fontWeight: 500 }}
                   axisLine={false}
                   tickLine={false}
+                  dy={10}
                 />
                 <YAxis
-                  tick={{ fill: 'var(--text-muted)', fontSize: 12 }}
+                  tick={{ fill: 'var(--text-tertiary)', fontSize: 11, fontFamily: 'DM Sans', fontWeight: 500 }}
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(v) =>
                     v >= 1000 ? `₦${(v / 1000).toFixed(0)}k` : `₦${v}`
                   }
+                  dx={-10}
                 />
                 <Tooltip
-                  contentStyle={{
-                    background: 'var(--bg-secondary)',
-                    border: '1px solid var(--border)',
-                    borderRadius: '10px',
-                    color: 'var(--text-primary)',
-                    fontSize: '13px',
-                  }}
-                  formatter={(v: number) => [formatCurrency(v), 'Revenue']}
+                  content={<CustomTooltip />}
+                  cursor={{ stroke: 'var(--border-strong)', strokeWidth: 1, strokeDasharray: '4 4' }}
                 />
-                <Bar
+                <Area
+                  type="monotone"
                   dataKey="revenue"
-                  fill="#f59e0b"
-                  radius={[6, 6, 0, 0]}
-                  opacity={0.85}
+                  stroke="var(--accent)"
+                  strokeWidth={3}
+                  fillOpacity={1}
+                  fill="url(#colorRevenue)"
+                  activeDot={{ r: 5, strokeWidth: 0, fill: 'var(--accent)' }}
                 />
-              </BarChart>
+              </AreaChart>
             </ResponsiveContainer>
           )}
         </motion.div>
@@ -185,10 +234,10 @@ export default function Dashboard() {
           variants={fadeUp}
           initial="hidden"
           animate="show"
-          className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6"
+          className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl p-6"
         >
-          <h2 className="text-base font-semibold text-[var(--text-primary)] mb-6">
-            Invoice Status
+          <h2 className="text-lg font-medium text-[var(--text-primary)] mb-6 font-['Lora'] tracking-tight">
+            Status Breakdown
           </h2>
           {!statusBreakdown ? (
             <Skeleton className="h-56 w-full" />
@@ -214,11 +263,12 @@ export default function Dashboard() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    background: 'var(--bg-secondary)',
-                    border: '1px solid var(--border)',
+                    background: '#ffffff',
+                    border: '1px solid #e2e8f0',
                     borderRadius: '10px',
-                    color: 'var(--text-primary)',
+                    color: '#0f172a',
                     fontSize: '13px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
                   }}
                 />
                 <Legend
@@ -241,17 +291,17 @@ export default function Dashboard() {
         variants={fadeUp}
         initial="hidden"
         animate="show"
-        className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl"
+        className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl overflow-hidden"
       >
-        <div className="flex items-center justify-between p-6 border-b border-[var(--border)]">
-          <h2 className="text-base font-semibold text-[var(--text-primary)]">
-            Recent Invoices
+        <div className="flex items-center justify-between p-6 border-b border-[var(--border-base)] bg-[var(--bg-raised)]">
+          <h2 className="text-lg font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
+            Recent Activity
           </h2>
           <Link
             to="/admin/invoices"
-            className="flex items-center gap-1.5 text-sm text-amber-400 hover:text-amber-300 transition-colors"
+            className="flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
           >
-            View all <ArrowRight size={14} />
+            View ledger <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -280,12 +330,12 @@ export default function Dashboard() {
                 {recentInvoices?.map((inv) => (
                   <tr
                     key={inv.id}
-                    className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-card-hover)] transition-colors"
+                    className="border-b border-[var(--border-subtle)] last:border-0 hover:bg-[var(--bg-raised)] transition-colors"
                   >
                     <td className="px-6 py-4">
                       <Link
                         to={`/admin/invoices/${inv.id}`}
-                        className="text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors"
+                        className="text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
                       >
                         {inv.invoice_number}
                       </Link>
