@@ -5,7 +5,7 @@ import { useRef } from 'react'
 import { getPublicInvoice, initializePayment } from '../../api/invoices'
 import { formatCurrency } from '../../utils/currency'
 import { formatDate } from '../../utils/dates'
-import { downloadPDF } from '../../utils/pdf'
+import { downloadInvoicePDF } from '../../utils/pdf'
 import { Button } from '../../components/ui/Button'
 import { Skeleton } from '../../components/ui/Skeleton'
 import toast from 'react-hot-toast'
@@ -46,11 +46,10 @@ export default function PublicInvoice() {
     }
   }
 
-  const handleDownload = async () => {
-    if (!printRef.current) return
-    await downloadPDF(printRef.current, `${invoice?.invoice_number}.pdf`)
-  }
-
+const handleDownload = () => {
+  if (!invoice) return
+  downloadInvoicePDF(invoice)
+}
   if (isLoading)
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">

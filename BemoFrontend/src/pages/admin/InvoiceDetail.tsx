@@ -14,7 +14,7 @@ import { Button } from '../../components/ui/Button'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { formatCurrency } from '../../utils/currency'
 import { formatDate, formatDateTime } from '../../utils/dates'
-import { downloadPDF } from '../../utils/pdf'
+import { downloadInvoicePDF } from '../../utils/pdf'
 import type { InvoiceStatus } from '../../types'
 
 export default function InvoiceDetail() {
@@ -57,10 +57,10 @@ export default function InvoiceDetail() {
     toast.success('Link copied to clipboard.')
   }
 
-  const handleDownloadPDF = async () => {
-    if (!printRef.current) return
-    await downloadPDF(printRef.current, `${invoice?.invoice_number}.pdf`)
-  }
+const handleDownloadPDF = () => {
+  if (!invoice) return
+  downloadInvoicePDF(invoice)
+}
 
   if (isLoading) {
     return (
