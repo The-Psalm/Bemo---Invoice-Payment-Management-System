@@ -37,7 +37,7 @@ export default function Reports() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
+          <h1 className="text-3xl font-semibold text-[var(--text-primary)] font-['Sora'] tracking-tight">
             Reports
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-1">
@@ -51,7 +51,7 @@ export default function Reports() {
       </div>
 
       {/* Date Range Filter */}
-      <div className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl p-4 flex gap-4 items-end">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-[var(--radius-lg)] p-4 md:p-5 flex gap-4 items-end">
         <Input
           label="From"
           type="date"
@@ -110,7 +110,7 @@ export default function Reports() {
       {report?.top_clients && report.top_clients.length > 0 && (
         <div className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl overflow-hidden">
           <div className="p-6 border-b border-[var(--border-base)] bg-[var(--bg-raised)]">
-            <h2 className="text-lg font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] font-['Sora'] tracking-tight">
               Top Clients by Revenue
             </h2>
           </div>

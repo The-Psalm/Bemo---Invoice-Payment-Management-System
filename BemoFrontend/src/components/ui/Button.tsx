@@ -22,8 +22,8 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const base = [
-    'inline-flex items-center justify-center gap-2 font-medium rounded-[var(--radius-sm)]',
-    'transition-all duration-150 cursor-pointer select-none',
+    'inline-flex items-center justify-center gap-2 font-medium rounded-[var(--radius-md)]',
+    'transition-all duration-200 cursor-pointer select-none',
     'disabled:opacity-50 disabled:cursor-not-allowed',
     'focus-visible:outline-2 focus-visible:outline-[var(--accent)]',
   ].join(' ')
@@ -33,31 +33,28 @@ export const Button = ({
       'bg-[var(--accent)] text-white',
       'hover:bg-[var(--accent-hover)]',
       'shadow-[var(--shadow-xs)]',
-      'active:scale-[0.98]',
+      'hover:-translate-y-0.5 active:translate-y-0',
     ].join(' '),
     secondary: [
       'bg-[var(--bg-surface)] text-[var(--text-primary)]',
       'border border-[var(--border-base)]',
-      'hover:bg-[var(--bg-hover)] hover:border-[var(--border-strong)]',
+      'hover:bg-[var(--bg-raised)] hover:border-[var(--border-strong)]',
       'shadow-[var(--shadow-xs)]',
-      'active:scale-[0.98]',
+      'hover:-translate-y-0.5 active:translate-y-0',
     ].join(' '),
     outline: [
       'bg-transparent text-[var(--text-secondary)]',
-      'border border-[var(--border-subtle)]',
-      'hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]',
-      'active:scale-[0.98]',
+      'border border-[var(--border-base)]',
+      'hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]',
     ].join(' '),
     ghost: [
       'bg-transparent text-[var(--text-secondary)]',
-      'hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]',
-      'active:scale-[0.98]',
+      'hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)]',
     ].join(' '),
     danger: [
       'bg-[var(--red-subtle)] text-[var(--red)]',
       'border border-[var(--red-border)]',
-      'hover:bg-red-100',
-      'active:scale-[0.98]',
+      'hover:bg-[#fee2e2]',
     ].join(' '),
   }
 

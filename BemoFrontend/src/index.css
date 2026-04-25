@@ -4,39 +4,39 @@
   /* Backgrounds */
   --bg-app: #FFF8EC;
   --bg-surface: #FFFFFF;
-  --bg-raised: #FFFAF0;
-  --bg-subtle: #F3E4C1;
-  --bg-hover: #EADCB8;
-  --bg-active: #DFD1AF;
+  --bg-raised: #FAF3E5;
+  --bg-subtle: #F0E6D2;
+  --bg-hover: #EBE0CA;
+  --bg-active: #E1D5BD;
 
   /* Borders */
-  --border-subtle: #F3E4C1;
-  --border-base: #E3D4B3;
-  --border-strong: #D1C2A1;
+  --border-subtle: #F0E6D2;
+  --border-base: #DCCCAC;
+  --border-strong: #C4B594;
 
   /* Text */
   --text-primary: #2A2723;
-  --text-secondary: #575249;
-  --text-tertiary: #8A8477;
-  --text-disabled: #BDB6A8;
-  --text-muted: #8A8477;
-  
+  --text-secondary: #4A453E;
+  --text-tertiary: #6B655C;
+  --text-disabled: #A69E93;
+  --text-muted: #6B655C;
+
   /* Aliases */
   --bg-card: var(--bg-surface);
   --bg-card-hover: var(--bg-raised);
   --border: var(--border-base);
 
-  /* Accent — Forest Green */
-  --accent: #164E2E;
-  --accent-hover: #103F23;
-  --accent-subtle: #E8F3ED;
-  --accent-border: #BCE2CD;
-  --accent-text: #114226;
+  /* Accent — Olive Green */
+  --accent: #546B41;
+  --accent-hover: #465A36;
+  --accent-subtle: #EDF1E8;
+  --accent-border: #99AD7A;
+  --accent-text: #2D3A22;
 
   /* Semantic */
-  --green: #164E2E;
-  --green-subtle: #E8F3ED;
-  --green-border: #BCE2CD;
+  --green: #546B41;
+  --green-subtle: #EDF1E8;
+  --green-border: #99AD7A;
   --amber: #B47109;
   --amber-subtle: #FFF9EB;
   --amber-border: #FDE68A;
@@ -48,11 +48,11 @@
   --blue-border: #C8D8E6;
 
   /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(42, 39, 35, 0.04);
-  --shadow-sm: 0 1px 3px rgba(42, 39, 35, 0.05), 0 1px 2px rgba(42, 39, 35, 0.03);
-  --shadow-md: 0 4px 6px rgba(42, 39, 35, 0.04), 0 2px 4px rgba(42, 39, 35, 0.03);
-  --shadow-lg: 0 10px 25px rgba(42, 39, 35, 0.06), 0 4px 10px rgba(42, 39, 35, 0.03);
-  --shadow-xl: 0 20px 40px rgba(42, 39, 35, 0.08), 0 8px 16px rgba(42, 39, 35, 0.04);
+  --shadow-xs: 0 1px 2px rgba(69, 56, 41, 0.06);
+  --shadow-sm: 0 2px 8px rgba(69, 56, 41, 0.08);
+  --shadow-md: 0 10px 24px rgba(69, 56, 41, 0.1);
+  --shadow-lg: 0 16px 34px rgba(69, 56, 41, 0.12);
+  --shadow-xl: 0 24px 44px rgba(69, 56, 41, 0.14);
 
   /* Radius */
   --radius-sm: 6px;
@@ -74,7 +74,7 @@ html {
 body {
   background-color: var(--bg-app);
   color: var(--text-primary);
-  font-family: 'DM Sans', -apple-system, sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
   font-weight: 400;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -90,6 +90,10 @@ h4 {
   line-height: 1.2;
   letter-spacing: -0.01em;
   color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
 }
 
 /* Scrollbar */
@@ -113,7 +117,7 @@ h4 {
 
 /* Selection */
 ::selection {
-  background: #E8F3ED;
+  background: #dfe8d3;
   color: var(--accent);
 }
 
@@ -137,9 +141,9 @@ h4 {
 
 .skeleton-shimmer {
   background: linear-gradient(90deg,
-      var(--bg-subtle) 25%,
-      var(--bg-hover) 50%,
-      var(--bg-subtle) 75%);
+      #F0E6D2 25%,
+      #DCCCAC 50%,
+      #F0E6D2 75%);
   background-size: 600px 100%;
   animation: shimmer 1.6s ease-in-out infinite;
 }
@@ -158,5 +162,12 @@ h4 {
 }
 
 .animate-fade-up {
-  animation: fade-up 0.3s ease forwards;
+  animation: fade-up 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .skeleton-shimmer {
+    animation: none !important;
+  }
 }

@@ -87,7 +87,7 @@ const handleDownloadPDF = () => {
           </button>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
+              <h1 className="text-2xl font-semibold text-[var(--text-primary)] font-['Sora'] tracking-tight">
                 {invoice.invoice_number}
               </h1>
               <Badge status={invoice.status as InvoiceStatus} />
@@ -152,12 +152,12 @@ const handleDownloadPDF = () => {
       >
         <div
           ref={printRef}
-          className="bg-[#FFFFFF] text-[var(--text-primary)] rounded-none p-12 shadow-[var(--shadow-xl)] border border-[var(--border-subtle)]"
+          className="bg-[#FFFFFF] text-[var(--text-primary)] rounded-[var(--radius-lg)] p-8 md:p-12 shadow-[var(--shadow-lg)] border border-[var(--border-subtle)]"
         >
           {/* Invoice top */}
           <div className="flex justify-between items-start mb-12">
             <div>
-              <h2 className="text-4xl font-medium text-[var(--text-primary)] mb-2 font-['Lora'] tracking-widest uppercase">
+              <h2 className="text-4xl font-semibold text-[var(--text-primary)] mb-2 font-['Sora'] tracking-tight uppercase">
                 Invoice
               </h2>
               <p className="text-[var(--text-secondary)] font-medium text-lg">
@@ -181,7 +181,7 @@ const handleDownloadPDF = () => {
             <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-widest mb-2">
               Bill To
             </p>
-            <p className="font-medium text-[var(--text-primary)] text-lg font-['Lora'] mb-1">
+            <p className="font-semibold text-[var(--text-primary)] text-lg font-['Sora'] mb-1">
               {invoice.client.display_name}
             </p>
             <p className="text-[var(--text-secondary)] text-sm">{invoice.client.email}</p>
@@ -242,11 +242,11 @@ const handleDownloadPDF = () => {
               </div>
               <div className="border-t-2 border-[var(--text-primary)] pt-3 mt-2 flex justify-between items-center">
                 <span className="text-[var(--text-primary)] font-semibold uppercase tracking-widest text-sm">Total</span>
-                <span className="text-2xl font-['Lora'] font-medium text-[var(--text-primary)]">{formatCurrency(invoice.total)}</span>
+                <span className="text-2xl font-['Sora'] font-semibold text-[var(--text-primary)]">{formatCurrency(invoice.total)}</span>
               </div>
               {invoice.status === 'paid' && invoice.paid_at && (
                 <div className="mt-6 p-3 border-2 border-[var(--accent)] text-center transform -rotate-2 w-max ml-auto opacity-80">
-                  <p className="text-sm text-[var(--accent)] font-bold uppercase tracking-widest font-['Lora']">
+                  <p className="text-sm text-[var(--accent)] font-bold uppercase tracking-widest font-['Sora']">
                     Paid In Full
                   </p>
                   <p className="text-[10px] text-[var(--accent)] mt-0.5">

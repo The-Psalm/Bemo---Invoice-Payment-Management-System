@@ -60,7 +60,7 @@ export const Modal = ({
             {/* Header */}
             <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-[var(--border-subtle)]">
               <div>
-                <h2 className="text-lg font-['Instrument_Serif'] text-[var(--text-primary)]">
+                <h2 className="text-lg font-['Sora'] font-semibold text-[var(--text-primary)] tracking-tight">
                   {title}
                 </h2>
                 {description && (

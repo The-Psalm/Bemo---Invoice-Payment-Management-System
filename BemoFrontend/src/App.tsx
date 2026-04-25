@@ -70,7 +70,7 @@ export default function App() {
       color: 'var(--text-primary)',
       border: '1px solid var(--border-base)',
       borderRadius: 'var(--radius-md)',
-      fontFamily: "'Geist', sans-serif",
+      fontFamily: "'Inter', sans-serif",
       fontSize: '13px',
       boxShadow: 'var(--shadow-lg)',
       padding: '10px 14px',

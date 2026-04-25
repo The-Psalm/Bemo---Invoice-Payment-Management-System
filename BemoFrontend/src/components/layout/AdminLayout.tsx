@@ -11,7 +11,7 @@ export const AdminLayout = ({ children }: { children: ReactNode }) => {
     <div className="flex min-h-screen bg-(--bg-app)">
       <Sidebar />
       <main className="flex-1 overflow-auto">
-        <div className="max-w-6xl mx-auto px-8 py-8">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 py-8 md:py-10">
           {children}
         </div>
       </main>

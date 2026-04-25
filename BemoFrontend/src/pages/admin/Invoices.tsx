@@ -84,7 +84,7 @@ export default function Invoices() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
+          <h1 className="text-3xl font-semibold text-[var(--text-primary)] font-['Sora'] tracking-tight">
             Invoices
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-1">
@@ -104,7 +104,7 @@ export default function Invoices() {
       </div>
 
       {/* Filters */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg)] p-4 md:p-5 shadow-[var(--shadow-xs)]">
         <div className="flex flex-wrap gap-3">
           <div className="flex-1 min-w-52">
             <Input

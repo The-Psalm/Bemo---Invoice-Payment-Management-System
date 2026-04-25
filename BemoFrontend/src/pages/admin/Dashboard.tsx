@@ -1,364 +1,225 @@
-import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-  CartesianGrid,
+  AreaChart, Area, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
-import {
-  TrendingUp,
-  Clock,
-  AlertTriangle,
-  FileText,
-  ArrowRight,
-} from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { DollarSign, Clock, AlertTriangle, CheckCircle, FileText } from 'lucide-react'
 import { getOverview, getRevenueChart, getStatusBreakdown } from '../../api/analytics'
 import { getInvoices } from '../../api/invoices'
 import { StatCard } from '../../components/ui/StatCard'
+import { StatCardSkeleton, TableSkeleton, Skeleton, ChartSkeleton } from '../../components/ui/Skeleton'
 import { Badge } from '../../components/ui/Badge'
-import { Skeleton, TableSkeleton } from '../../components/ui/Skeleton'
+import { PageHeader } from '../../components/ui/PageHeader'
 import { formatCurrency } from '../../utils/currency'
 import { formatDate } from '../../utils/dates'
 import { useAuthStore } from '../../store/authStore'
 
-const PIE_COLORS = ['#E3D4B3', '#164E2E', '#9C2B14', '#B47109', '#2B4257']
+const PIE_COLORS = ['#546B41', '#99AD7A', '#DCCCAC', '#2A2723', '#F0E6D2']
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.07, duration: 0.4 },
-  }),
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
 }
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-md)] rounded-lg p-3 min-w-[120px]">
-        <p className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">
-          {label}
-        </p>
-        <p className="text-xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight leading-none">
-          {formatCurrency(payload[0].value)}
-        </p>
-      </div>
-    )
-  }
-  return null
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
 }
 
 export default function Dashboard() {
   const user = useAuthStore((s) => s.user)
-  const [revenuePeriod, setRevenuePeriod] = useState('6M')
 
-  const { data: overview, isLoading: overviewLoading } = useQuery({
+  const { data: overview, isLoading: lo } = useQuery({
     queryKey: ['analytics-overview'],
     queryFn: () => getOverview().then((r) => r.data),
   })
-
-  const { data: revenueChartData, isLoading: chartLoading } = useQuery({
-    queryKey: ['revenue-chart', revenuePeriod],
-    queryFn: () => getRevenueChart(revenuePeriod).then((r) => r.data),
+  const { data: revenueChart, isLoading: lc } = useQuery({
+    queryKey: ['revenue-chart'],
+    queryFn: () => getRevenueChart().then((r) => r.data),
   })
-
-  const revenueChart = useMemo(() => {
-    if (!revenueChartData) return []
-    if (revenuePeriod === '6M') return revenueChartData.slice(-6)
-    if (revenuePeriod === '1Y') return revenueChartData.slice(-12)
-    return revenueChartData
-  }, [revenueChartData, revenuePeriod])
-
   const { data: statusBreakdown } = useQuery({
     queryKey: ['status-breakdown'],
     queryFn: () => getStatusBreakdown().then((r) => r.data),
   })
-
-  const { data: recentInvoices, isLoading: invoicesLoading } = useQuery({
-    queryKey: ['recent-invoices'],
-    queryFn: () =>
-      getInvoices({}).then((r) => r.data.slice(0, 6)),
+  const { data: recent, isLoading: lr } = useQuery({
+    queryKey: ['invoices', 'recent'],
+    queryFn: () => getInvoices().then((r) => r.data.slice(0, 6)),
   })
 
-  const stats = [
-    {
-      label: 'Total Revenue',
-      value: overviewLoading ? '—' : formatCurrency(overview?.total_revenue ?? 0),
-      sub: 'All time',
-      icon: <TrendingUp size={18} />,
-      accent: 'green' as const,
-    },
-    {
-      label: 'This Month',
-      value: overviewLoading ? '—' : formatCurrency(overview?.revenue_this_month ?? 0),
-      sub: 'Revenue collected',
-      icon: <FileText size={18} />,
-      accent: 'amber' as const,
-    },
-    {
-      label: 'Outstanding',
-      value: overviewLoading ? '—' : formatCurrency(overview?.outstanding ?? 0),
-      sub: `${overview?.sent_count ?? 0} sent invoices`,
-      icon: <Clock size={18} />,
-      accent: 'blue' as const,
-    },
-    {
-      label: 'Overdue',
-      value: overviewLoading ? '—' : String(overview?.overdue_count ?? 0),
-      sub: 'Require attention',
-      icon: <AlertTriangle size={18} />,
-      accent: 'red' as const,
-    },
-  ]
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+
+  const stats = overview ? [
+    { label: 'Total Revenue', value: formatCurrency(overview.total_revenue), icon: <DollarSign size={15} />, accent: 'green' as const, sub: `${formatCurrency(overview.revenue_this_month)} this month` },
+    { label: 'Outstanding', value: formatCurrency(overview.outstanding), icon: <Clock size={15} />, accent: 'amber' as const, sub: `${overview.sent_count} awaiting payment` },
+    { label: 'Overdue', value: String(overview.overdue_count), icon: <AlertTriangle size={15} />, accent: 'red' as const, sub: 'Require attention' },
+    { label: 'Paid Invoices', value: String(overview.paid_count), icon: <CheckCircle size={15} />, accent: 'green' as const, sub: `of ${overview.total_invoices} total` },
+  ] : []
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-3xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
-          Good morning, {user?.full_name?.split(' ')[0]}.
-        </h1>
-        <p className="text-[var(--text-muted)] text-sm mt-1">
-          Here's what's happening with your business today.
-        </p>
-      </motion.div>
+    <div>
+      <PageHeader
+        title={`${greeting}${user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}.`}
+        description="Here's what's happening with your business today."
+      />
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {stats.map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            custom={i}
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-          >
-            {overviewLoading ? (
-              <Skeleton className="h-28 w-full" />
-            ) : (
-              <StatCard {...stat} />
-            )}
-          </motion.div>
-        ))}
-      </div>
+      <motion.div
+        className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8"
+        variants={stagger} initial="hidden" animate="show"
+      >
+        {lo
+          ? Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
+          : stats.map((s) => (
+            <motion.div key={s.label} variants={item}>
+              <StatCard {...s} />
+            </motion.div>
+          ))}
+      </motion.div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Revenue Bar Chart */}
-        <motion.div
-          custom={4}
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          className="xl:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl p-6"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
-              Revenue Overview
-            </h2>
-            <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-lg border border-[var(--border-subtle)]">
-              {['6M', '1Y', 'ALL'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setRevenuePeriod(tab)}
-                  className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                    revenuePeriod === tab 
-                      ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm' 
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-          {chartLoading ? (
-            <Skeleton className="h-56 w-full" />
-          ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <AreaChart data={revenueChart} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-8">
+        {/* Revenue Area Chart */}
+        <div className="xl:col-span-2 bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-subtle)] p-6 shadow-[var(--shadow-sm)]">
+          <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.12em] mb-1">
+            Revenue
+          </p>
+          <p className="text-2xl font-['Lora'] font-medium text-[var(--text-primary)] mb-6 tracking-tight">
+            Last 6 months
+          </p>
+          {lc ? <ChartSkeleton /> : (
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={revenueChart} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
+                  <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="#546B41" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#99AD7A" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="var(--border-subtle)" />
-                <XAxis
-                  dataKey="month"
-                  tick={{ fill: 'var(--text-tertiary)', fontSize: 11, fontFamily: 'DM Sans', fontWeight: 500 }}
-                  axisLine={false}
-                  tickLine={false}
-                  dy={10}
-                />
-                <YAxis
-                  tick={{ fill: 'var(--text-tertiary)', fontSize: 11, fontFamily: 'DM Sans', fontWeight: 500 }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(v) =>
-                    v >= 1000 ? `₦${(v / 1000).toFixed(0)}k` : `₦${v}`
-                  }
-                  dx={-10}
-                />
+                <CartesianGrid strokeDasharray="2 4" stroke="var(--border-subtle)" vertical={false} />
+                <XAxis dataKey="month" tick={{ fill: 'var(--text-tertiary)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: 'var(--text-tertiary)', fontSize: 11 }} axisLine={false} tickLine={false} width={80} tickFormatter={(v) => formatCurrency(Number(v)).replace(/\.00$/, '')} />
                 <Tooltip
-                  content={<CustomTooltip />}
-                  cursor={{ stroke: 'var(--border-strong)', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  contentStyle={{
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-base)',
+                    borderRadius: 'var(--radius-md)',
+                    color: 'var(--text-primary)',
+                    fontSize: 13,
+                    boxShadow: 'var(--shadow-lg)',
+                  }}
+                  formatter={(v) => [formatCurrency(Number(v ?? 0)), 'Revenue']}
                 />
-                <Area
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="var(--accent)"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#colorRevenue)"
-                  activeDot={{ r: 5, strokeWidth: 0, fill: 'var(--accent)' }}
-                />
+                <Area type="monotone" dataKey="revenue" stroke="#546B41" strokeWidth={2.5} fill="url(#grad)" dot={false} activeDot={{ r: 5, fill: '#546B41', stroke: '#FFF8EC', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
           )}
-        </motion.div>
+        </div>
 
-        {/* Status Pie Chart */}
-        <motion.div
-          custom={5}
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl p-6"
-        >
-          <h2 className="text-lg font-medium text-[var(--text-primary)] mb-6 font-['Lora'] tracking-tight">
-            Status Breakdown
-          </h2>
-          {!statusBreakdown ? (
-            <Skeleton className="h-56 w-full" />
+        {/* Status Pie */}
+        <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-subtle)] p-6 shadow-[var(--shadow-sm)]">
+          <p className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.12em] mb-1">
+            Breakdown
+          </p>
+          <p className="text-2xl font-['Lora'] font-medium text-[var(--text-primary)] mb-4 tracking-tight">
+            By status
+          </p>
+          {statusBreakdown ? (
+            <>
+              <ResponsiveContainer width="100%" height={160}>
+                <PieChart>
+                  <Pie data={statusBreakdown} dataKey="count" nameKey="status" cx="50%" cy="50%" innerRadius={44} outerRadius={68} paddingAngle={3} strokeWidth={0}>
+                    {statusBreakdown.map((_, i) => (
+                      <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: 'var(--bg-surface)',
+                      border: '1px solid var(--border-base)',
+                      borderRadius: 'var(--radius-md)',
+                      fontSize: 12,
+                      boxShadow: 'var(--shadow-lg)',
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="space-y-2 mt-3">
+                {statusBreakdown.map((s, i) => (
+                  <div key={s.status} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
+                      <span className="text-xs text-[var(--text-secondary)] capitalize">{s.status}</span>
+                    </div>
+                    <span className="text-xs font-semibold text-[var(--text-primary)]">{s.count}</span>
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie
-                  data={statusBreakdown}
-                  dataKey="count"
-                  nameKey="status"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={80}
-                  paddingAngle={3}
-                >
-                  {statusBreakdown.map((_, i) => (
-                    <Cell
-                      key={i}
-                      fill={PIE_COLORS[i % PIE_COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '10px',
-                    color: '#0f172a',
-                    fontSize: '13px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
-                  }}
-                />
-                <Legend
-                  iconType="circle"
-                  iconSize={8}
-                  wrapperStyle={{
-                    fontSize: '12px',
-                    color: 'var(--text-muted)',
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            <Skeleton className="h-44" />
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Recent Invoices */}
-      <motion.div
-        custom={6}
-        variants={fadeUp}
-        initial="hidden"
-        animate="show"
-        className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl overflow-hidden"
-      >
-        <div className="flex items-center justify-between p-6 border-b border-[var(--border-base)] bg-[var(--bg-raised)]">
-          <h2 className="text-lg font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
-            Recent Activity
-          </h2>
-          <Link
-            to="/admin/invoices"
-            className="flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
-          >
-            View ledger <ArrowRight size={14} />
-          </Link>
+      <div className="bg-[var(--bg-surface)] rounded-[var(--radius-lg)] border border-[var(--border-subtle)] shadow-[var(--shadow-sm)] overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)]">
+          <p className="text-sm font-semibold text-[var(--text-primary)]">Recent Invoices</p>
+          <a href="/admin/invoices" className="text-xs text-[var(--accent-text)] hover:text-[var(--accent)] transition-colors font-medium">
+            View all →
+          </a>
         </div>
-
-        {invoicesLoading ? (
-          <div className="p-6">
-            <TableSkeleton rows={5} />
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[var(--border)]">
-                  {['Invoice', 'Client', 'Amount', 'Due', 'Status'].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="text-left px-6 py-3 text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
-                      >
-                        {h}
-                      </th>
-                    )
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {recentInvoices?.map((inv) => (
-                  <tr
-                    key={inv.id}
-                    className="border-b border-[var(--border-subtle)] last:border-0 hover:bg-[var(--bg-raised)] transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <Link
-                        to={`/admin/invoices/${inv.id}`}
-                        className="text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
-                      >
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-[var(--border-subtle)]">
+              {['Invoice', 'Client', 'Amount', 'Due', 'Status'].map((h) => (
+                <th key={h} className="px-6 py-3 text-left text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-widest">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {lr
+              ? <TableSkeleton rows={6} cols={5} />
+              : recent?.map((inv, i) => (
+                <motion.tr
+                  key={inv.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: i * 0.04 }}
+                  className="border-b border-[var(--border-subtle)] last:border-0 hover:bg-[var(--bg-raised)] transition-colors cursor-pointer"
+                  onClick={() => window.location.href = `/admin/invoices/${inv.id}`}
+                >
+                  <td className="px-6 py-3.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-[var(--radius-sm)] bg-[var(--bg-subtle)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-tertiary)]">
+                        <FileText size={13} />
+                      </div>
+                      <span className="text-sm font-medium text-[var(--text-primary)]">
                         {inv.invoice_number}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-[var(--text-primary)]">
-                      {inv.client.display_name}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-medium text-[var(--text-primary)]">
-                      {formatCurrency(inv.total)}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
-                      {formatDate(inv.due_date)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge status={inv.status} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </motion.div>
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-3.5">
+                    <p className="text-sm text-[var(--text-primary)]">{inv.client.display_name}</p>
+                    <p className="text-xs text-[var(--text-tertiary)]">{inv.client.email}</p>
+                  </td>
+                  <td className="px-6 py-3.5 text-sm font-medium text-[var(--text-primary)]">
+                    {formatCurrency(inv.total)}
+                  </td>
+                  <td className="px-6 py-3.5 text-sm text-[var(--text-tertiary)]">
+                    {formatDate(inv.due_date)}
+                  </td>
+                  <td className="px-6 py-3.5">
+                    <Badge status={inv.status} />
+                  </td>
+                </motion.tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

@@ -14,7 +14,7 @@ export const EmptyState = ({ title, description, action, icon }: EmptyStateProps
         {icon}
       </div>
     )}
-    <h3 className="text-base font-['Instrument_Serif'] text-[var(--text-primary)] mb-1">
+    <h3 className="text-base font-['Sora'] font-semibold text-[var(--text-primary)] mb-1 tracking-tight">
       {title}
     </h3>
     <p className="text-sm text-[var(--text-tertiary)] max-w-xs leading-relaxed mb-6">

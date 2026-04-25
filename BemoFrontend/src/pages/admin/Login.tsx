@@ -25,7 +25,8 @@ export default function Login() {
     return !Object.keys(e).length
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault()
     if (!validate()) return
     setLoading(true)
     try {
@@ -42,45 +43,45 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[var(--bg-app)] flex">
       {/* Left panel */}
-      <div className="hidden lg:flex w-[420px] flex-shrink-0 flex-col justify-between bg-[var(--text-primary)] p-12">
+      <div className="hidden lg:flex w-[480px] flex-shrink-0 flex-col justify-between bg-[var(--accent)] p-16">
         <div>
-          <span className="font-['Instrument_Serif'] text-2xl text-white italic">Bemo</span>
+          <span className="font-['Sora'] text-3xl font-semibold text-white tracking-tight">
+            Bemo
+          </span>
         </div>
-        <div>
-          <blockquote className="text-white/70 text-base leading-relaxed font-['Instrument_Serif'] italic">
-            "The best invoice tool I've used. Clean, fast, and my clients actually pay on time now."
-          </blockquote>
-          <div className="mt-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-sm font-medium">
-              A
-            </div>
-            <div>
-              <p className="text-white text-sm font-medium">Amaka O.</p>
-              <p className="text-white/50 text-xs">Creative Director, FashionHQ</p>
-            </div>
-          </div>
+        
+        <div className="space-y-6">
+          <h2 className="text-white text-5xl font-['Sora'] leading-tight font-semibold tracking-tight">
+            Manage invoices with calm, focused clarity.
+          </h2>
+          <p className="text-white/70 text-lg">
+            A minimalist workspace built for modern finance teams.
+          </p>
         </div>
-        <p className="text-white/30 text-xs">© 2025 Bemo. All rights reserved.</p>
+
+        <p className="text-white/40 text-xs uppercase tracking-widest">
+          © 2025 Bemo. All rights reserved.
+        </p>
       </div>
 
       {/* Right panel */}
       <div className="flex-1 flex items-center justify-center p-8">
         <motion.div
-          className="w-full max-w-sm"
+          className="w-full max-w-sm bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-xl)] p-8 shadow-[var(--shadow-md)]"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="mb-8">
-            <h1 className="text-3xl font-['Instrument_Serif'] text-[var(--text-primary)]">
+            <h1 className="text-4xl font-['Sora'] font-semibold text-[var(--text-primary)] tracking-tight">
               Welcome back
             </h1>
-            <p className="text-sm text-[var(--text-tertiary)] mt-1">
+            <p className="text-base text-[var(--text-secondary)] mt-2">
               Sign in to your Bemo dashboard
             </p>
           </div>
 
-          <div className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <Input
               label="Email address"
               type="email"
@@ -88,7 +89,6 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={errors.email}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               autoFocus
             />
             <Input
@@ -98,7 +98,6 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               error={errors.password}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               suffix={
                 <button
                   type="button"
@@ -110,15 +109,15 @@ export default function Login() {
               }
             />
             <Button
+              type="submit"
               variant="primary"
               size="lg"
               loading={loading}
-              onClick={handleSubmit}
               className="w-full"
             >
               Sign in
             </Button>
-          </div>
+          </form>
         </motion.div>
       </div>
     </div>

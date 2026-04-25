@@ -11,11 +11,11 @@ interface StatCardProps {
 }
 
 const accents = {
-  green: { icon: 'text-[var(--green)] bg-[var(--green-subtle)]', border: 'border-l-[var(--green)]' },
-  amber: { icon: 'text-[var(--amber)] bg-[var(--amber-subtle)]', border: 'border-l-[var(--amber)]' },
-  red: { icon: 'text-[var(--red)]   bg-[var(--red-subtle)]', border: 'border-l-[var(--red)]' },
-  blue: { icon: 'text-[var(--blue)]  bg-[var(--blue-subtle)]', border: 'border-l-[var(--blue)]' },
-  neutral: { icon: 'text-[var(--text-secondary)] bg-[var(--bg-subtle)]', border: 'border-l-[var(--border-strong)]' },
+  green: { icon: 'text-[var(--green)] bg-[var(--green-subtle)]', border: 'border-t-[var(--green)]' },
+  amber: { icon: 'text-[var(--amber)] bg-[var(--amber-subtle)]', border: 'border-t-[var(--amber)]' },
+  red: { icon: 'text-[var(--red)] bg-[var(--red-subtle)]', border: 'border-t-[var(--red)]' },
+  blue: { icon: 'text-[var(--blue)] bg-[var(--blue-subtle)]', border: 'border-t-[var(--blue)]' },
+  neutral: { icon: 'text-[var(--text-secondary)] bg-[var(--bg-subtle)]', border: 'border-t-[var(--border-strong)]' },
 }
 
 export const StatCard = ({
@@ -32,11 +32,11 @@ export const StatCard = ({
     <div
       className={clsx(
         'bg-[var(--bg-surface)] rounded-[var(--radius-lg)]',
-        'border border-[var(--border-subtle)] border-l-2',
+        'border border-[var(--border-subtle)] border-t-2',
         'p-5 flex items-start gap-4',
         'shadow-[var(--shadow-sm)]',
-        'hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5',
-        'transition-all duration-200',
+        'hover:shadow-[var(--shadow-md)] hover:-translate-y-1',
+        'transition-all duration-300',
         border
       )}
     >

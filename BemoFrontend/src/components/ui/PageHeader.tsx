@@ -12,7 +12,7 @@ interface PageHeaderProps {
 export const PageHeader = ({ title, description, back, actions }: PageHeaderProps) => {
   const navigate = useNavigate()
   return (
-    <div className="flex items-start justify-between mb-8">
+    <div className="flex items-start justify-between mb-8 md:mb-10">
       <div className="flex items-start gap-3">
         {back && (
           <button
@@ -23,11 +23,11 @@ export const PageHeader = ({ title, description, back, actions }: PageHeaderProp
           </button>
         )}
         <div>
-          <h1 className="text-3xl font-['Instrument_Serif'] text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-['Sora'] font-semibold text-[var(--text-primary)] tracking-tight">
             {title}
           </h1>
           {description && (
-            <p className="text-sm text-[var(--text-tertiary)] mt-0.5">
+            <p className="text-sm text-[var(--text-tertiary)] mt-1.5 max-w-2xl">
               {description}
             </p>
           )}

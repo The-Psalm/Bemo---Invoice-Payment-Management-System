@@ -92,7 +92,7 @@ export default function Settings() {
       ].map((section) => (
         <div
           key={section.title}
-          className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-xl p-6"
+          className="bg-[var(--bg-surface)] border border-[var(--border-base)] shadow-[var(--shadow-sm)] rounded-[var(--radius-lg)] p-6"
         >
           <h2 className="text-lg font-medium text-[var(--text-primary)] mb-5 font-['Lora'] tracking-tight">
             {section.title}

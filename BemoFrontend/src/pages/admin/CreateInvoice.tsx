@@ -71,7 +71,7 @@ export default function CreateInvoice() {
           <ArrowLeft size={16} />
         </button>
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 font-['Outfit'] tracking-tight">
+          <h1 className="text-3xl font-medium text-[var(--text-primary)] font-['Lora'] tracking-tight">
             New Invoice
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-0.5">
@@ -96,7 +96,7 @@ export default function CreateInvoice() {
               <select
                 value={store.clientId ?? ''}
                 onChange={(e) => store.setClientId(Number(e.target.value))}
-                className="w-full px-3 py-2.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
+                className="w-full h-9 px-3 rounded-[var(--radius-sm)] bg-[var(--bg-surface)] border border-[var(--border-base)] text-[var(--text-primary)] text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/10 transition-all shadow-[var(--shadow-xs)] hover:border-[var(--border-strong)]"
               >
                 <option value="">Select a client</option>
                 {clients?.map((c) => (
@@ -174,7 +174,7 @@ export default function CreateInvoice() {
                   className="grid grid-cols-12 gap-2 items-center"
                 >
                   <input
-                    className="col-span-6 px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all shadow-sm"
+                    className="col-span-6 h-9 px-3 rounded-[var(--radius-sm)] bg-[var(--bg-surface)] border border-[var(--border-base)] text-[var(--text-primary)] text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/10 transition-all shadow-[var(--shadow-xs)] hover:border-[var(--border-strong)]"
                     placeholder="e.g. Website Design"
                     value={item.description}
                     onChange={(e) =>
@@ -184,7 +184,7 @@ export default function CreateInvoice() {
                   <input
                     type="number"
                     min={1}
-                    className="col-span-2 px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-center shadow-sm"
+                    className="col-span-2 h-9 px-3 rounded-[var(--radius-sm)] bg-[var(--bg-surface)] border border-[var(--border-base)] text-[var(--text-primary)] text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/10 transition-all text-center shadow-[var(--shadow-xs)] hover:border-[var(--border-strong)]"
                     value={item.quantity}
                     onChange={(e) =>
                       store.updateItem(index, 'quantity', Number(e.target.value))
@@ -193,7 +193,7 @@ export default function CreateInvoice() {
                   <input
                     type="number"
                     min={0}
-                    className="col-span-2 px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-right shadow-sm"
+                    className="col-span-2 h-9 px-3 rounded-[var(--radius-sm)] bg-[var(--bg-surface)] border border-[var(--border-base)] text-[var(--text-primary)] text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/10 transition-all text-right shadow-[var(--shadow-xs)] hover:border-[var(--border-strong)]"
                     value={item.unit_price}
                     onChange={(e) =>
                       store.updateItem(index, 'unit_price', Number(e.target.value))
@@ -224,7 +224,7 @@ export default function CreateInvoice() {
               placeholder="e.g. Payment due within 30 days. Thank you for your business."
               value={store.notes}
               onChange={(e) => store.setField('notes', e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none placeholder:text-slate-400 shadow-sm"
+              className="w-full px-3 py-2.5 rounded-[var(--radius-sm)] bg-[var(--bg-surface)] border border-[var(--border-base)] text-[var(--text-primary)] text-sm outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/10 transition-all resize-none placeholder:text-[var(--text-disabled)] shadow-[var(--shadow-xs)] hover:border-[var(--border-strong)]"
             />
           </div>
         </div>
@@ -251,9 +251,9 @@ export default function CreateInvoice() {
                   {formatCurrency(store.taxAmount())}
                 </span>
               </div>
-              <div className="border-t border-slate-200 pt-3 flex justify-between font-semibold">
-                <span className="text-[var(--text-primary)]">Total</span>
-                <span className="text-blue-600 text-lg font-bold font-['Outfit']">
+              <div className="border-t border-[var(--border-strong)] pt-3 flex justify-between font-medium items-center">
+                <span className="text-[var(--text-primary)] uppercase tracking-widest text-sm">Total</span>
+                <span className="text-[var(--text-primary)] text-2xl font-['Lora']">
                   {formatCurrency(store.total())}
                 </span>
               </div>
